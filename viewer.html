@@ -21,7 +21,7 @@
       document.body.appendChild(renderer.domElement);
 
       const loader = new GLTFLoader();
-      loader.load('URL_DO_ARQUIVO_GLB_AQUI', function (gltf) {
+      loader.load('https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/model3d//modern_house_of_shapes.glb', function (gltf) {
         scene.add(gltf.scene);
       }, undefined, function (error) {
         console.error(error);
