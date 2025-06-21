@@ -37,16 +37,21 @@
 
     <script>
       const params = new URLSearchParams(window.location.search);
-      const modelUrl = params.get("url");
+      const modelo = params.get("modelo");
 
-      if (modelUrl) {
-        document.getElementById("viewer").setAttribute("src", modelUrl);
+      // Caminho fixo para os arquivos no Supabase
+      const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
+
+      if (modelo) {
+        const fullUrl = baseURL + modelo;
+        document.getElementById("viewer").setAttribute("src", fullUrl);
       } else {
-        // Fallback (modelo padrão caso não venha nada na URL)
-        document.getElementById("viewer").setAttribute("src", "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/model3d/modern_house_of_shapes.glb");
+        // Se não passar nada, carrega modelo padrão
+        document.getElementById("viewer").setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
       }
     </script>
   </body>
 </html>
+
 
 
