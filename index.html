@@ -49,6 +49,42 @@
         // Se não passar nada, carrega modelo padrão
         document.getElementById("viewer").setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
       }
+
+ // Comunicação com os botões
+const viewer = document.getElementById('viewer');
+
+      window.addEventListener("message", (event) => {
+        const msg = event.data;
+
+        if (msg === "zoomIn") {
+          const orbit = viewer.getCameraOrbit();
+          orbit.radius = Math.max(orbit.radius - 0.5, 0.5);
+          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
+        }
+
+        if (msg === "zoomOut") {
+          const orbit = viewer.getCameraOrbit();
+          orbit.radius += 0.5;
+          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
+        }
+
+        if (msg === "rotateLeft") {
+          const orbit = viewer.getCameraOrbit();
+          orbit.theta -= 0.2;
+          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
+        }
+
+        if (msg === "rotateRight") {
+          const orbit = viewer.getCameraOrbit();
+          orbit.theta += 0.2;
+          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
+        }
+
+        if (msg === "reset") {
+          viewer.resetTurntableRotation();
+        }
+      });
+
     </script>
   </body>
 </html>
