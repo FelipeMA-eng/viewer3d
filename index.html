@@ -50,40 +50,33 @@
         document.getElementById("viewer").setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
       }
 
- // Comunicação com os botões
-const viewer = document.getElementById('viewer');
+       //controle via parâmetro da URL
+      function getParametro(nome) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(nome);
+      }
 
-      window.addEventListener("message", (event) => {
-        const msg = event.data;
+      const viewer = document.getElementById("viewer");
+      const comando = getParametro("comando");
 
-        if (msg === "zoomIn") {
-          const orbit = viewer.getCameraOrbit();
-          orbit.radius = Math.max(orbit.radius - 0.5, 0.5);
-          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
-        }
-
-        if (msg === "zoomOut") {
-          const orbit = viewer.getCameraOrbit();
-          orbit.radius += 0.5;
-          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
-        }
-
-        if (msg === "rotateLeft") {
-          const orbit = viewer.getCameraOrbit();
-          orbit.theta -= 0.2;
-          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
-        }
-
-        if (msg === "rotateRight") {
-          const orbit = viewer.getCameraOrbit();
-          orbit.theta += 0.2;
-          viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`;
-        }
-
-        if (msg === "reset") {
-          viewer.resetTurntableRotation();
-        }
-      });
+      if (comando === "zoomIn") {
+        const orbit = viewer.getCameraOrbit();
+        const novoZoom = Math.max(orbit.radius - 0.5, 0.5);
+        viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
+      } else if (comando === "zoomOut") {
+        const orbit = viewer.getCameraOrbit();
+        const novoZoom = orbit.radius + 0.5;
+        viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
+      } else if (comando === "rotateLeft") {
+        const orbit = viewer.getCameraOrbit();
+        viewer.cameraOrbit = `${orbit.theta - 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
+      } else if (comando === "rotateRight") {
+        const orbit = viewer.getCameraOrbit();
+        viewer.cameraOrbit = `${orbit.theta + 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
+      } else if (comando === "reset") {
+        viewer.cameraOrbit = "0rad 75deg 3m";
+      }
+ 
 
     </script>
   </body>
