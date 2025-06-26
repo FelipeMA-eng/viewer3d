@@ -49,28 +49,25 @@
     viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
   }
 
-  async function aplicarComando(comando) {
-    if (!comando) return;
+  window.addEventListener("message", async (event) => {
+  const comando = event.data;
+  const viewer = document.getElementById("viewer");
+  const orbit = await viewer.getCameraOrbit();
 
-    const orbit = await viewer.getCameraOrbit();
-    let novoOrbit = orbit;
-
-    if (comando === "zoomIn") {
-      const novoZoom = Math.max(orbit.radius - 2, 0.5);
-      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
-    } else if (comando === "zoomOut") {
-      const novoZoom = orbit.radius + 0.5;
-      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
-    } else if (comando === "rotateLeft") {
-      viewer.cameraOrbit = `${orbit.theta - 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
-    } else if (comando === "rotateRight") {
-      viewer.cameraOrbit = `${orbit.theta + 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
-    } else if (comando === "reset") {
-      viewer.cameraOrbit = `0rad 75deg 3m`;
-    }
+  if (comando === "zoomIn") {
+    const novoZoom = Math.max(orbit.radius - 1, 0.5);
+    viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
+  } else if (comando === "zoomOut") {
+    const novoZoom = orbit.radius + 1;
+    viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
+  } else if (comando === "rotateLeft") {
+    viewer.cameraOrbit = `${orbit.theta - 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
+  } else if (comando === "rotateRight") {
+    viewer.cameraOrbit = `${orbit.theta + 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
+  } else if (comando === "reset") {
+    viewer.cameraOrbit = `0rad 75deg 3m`;
   }
-
-  aplicarComando(comando);
+});
 </script>
   </body>
 </html>
