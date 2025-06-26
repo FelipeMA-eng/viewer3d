@@ -36,22 +36,7 @@
     </model-viewer>
 
     <script>
-      const params = new URLSearchParams(window.location.search);
-      const modelo = params.get("modelo");
-
-      // Caminho fixo para os arquivos no Supabase
-      const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
-
-      if (modelo) {
-        const fullUrl = baseURL + modelo;
-        document.getElementById("viewer").setAttribute("src", fullUrl);
-      } else {
-        // Se não passar nada, carrega modelo padrão
-        document.getElementById("viewer").setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
-      }
-
-       //controle via parâmetro da URL
-      const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search);
   const modelo = params.get("modelo");
   const comando = params.get("comando");
 
@@ -86,9 +71,7 @@
   }
 
   aplicarComando(comando);
- 
-
-    </script>
+</script>
   </body>
 </html>
 
