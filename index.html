@@ -84,28 +84,54 @@
       radius = parseFloat(orbit.radius.toString());
     });
 
-    function rotateLeft() {
-      theta += 0.3;
-      updateCamera();
-    }
-    function rotateRight() {
-      theta -= 0.3;
-      updateCamera();
-    }
-    function rotateDown() {
-      phi = Math.max(0.1, phi - 0.2);
-      updateCamera();
-    }
-    function rotateUp() {
-      phi = Math.min(Math.PI - 0.1, phi + 0.2);
-      updateCamera();
-    }
-    function reset() {
-      theta = 0;
-      phi = 1.309;
-      radius = 3;
-      updateCamera();
-    }
+    async function rotateLeft() {
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  const phi = parseFloat(orbit.phi);
+  const radius = parseFloat(orbit.radius);
+
+  const newTheta = theta + 0.3;
+
+  viewer.cameraOrbit = `${newTheta}rad ${phi}rad ${radius}m`;
+}
+    async function rotateRight() {
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  const phi = parseFloat(orbit.phi);
+  const radius = parseFloat(orbit.radius);
+
+  // Incrementa theta para girar à direita
+  const newTheta = theta - 0.3;
+
+  viewer.cameraOrbit = `${newTheta}rad ${phi}rad ${radius}m`;
+}
+   async function rotateUp() {
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  const phi = parseFloat(orbit.phi);
+  const radius = parseFloat(orbit.radius);
+
+  // Limita phi para não virar demais para cima/baixo
+  const newPhi = Math.max(0.1, phi - 0.2);
+
+  viewer.cameraOrbit = `${theta}rad ${newPhi}rad ${radius}m`;
+}
+
+async function rotateDown() {
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  const phi = parseFloat(orbit.phi);
+  const radius = parseFloat(orbit.radius);
+
+  // Limita phi para não virar demais para cima/baixo
+  const newPhi = Math.min(Math.PI - 0.1, phi + 0.2);
+
+  viewer.cameraOrbit = `${theta}rad ${newPhi}rad ${radius}m`;
+}
+
+function reset() {
+  viewer.cameraOrbit = `0rad 1.309rad 3m`; // posição inicial padrão
+}
 
     viewer.addEventListener('load', () => {
       updateCamera();
