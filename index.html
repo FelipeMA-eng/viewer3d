@@ -14,12 +14,10 @@
       background: #000;
       font-family: sans-serif;
     }
-
     model-viewer {
       width: 100vw;
       height: 100vh;
     }
-
     .controls {
       position: fixed;
       bottom: 20px;
@@ -29,7 +27,6 @@
       gap: 10px;
       z-index: 10;
     }
-
     .controls button {
       background: white;
       border: none;
@@ -43,6 +40,8 @@
 <body>
   <model-viewer id="viewer"
     camera-controls
+    auto-rotate="false"
+    interaction-prompt="none"
     background-color="#ffffff"
     shadow-intensity="0.5"
     exposure="1"
@@ -59,8 +58,9 @@
   </div>
 
   <script>
-  const viewer = document.getElementById("viewer");
-// Carrega o modelo da URL (?modelo=...)
+    const viewer = document.getElementById("viewer");
+
+    // Carregar modelo via parâmetro
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
     const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
@@ -71,60 +71,54 @@
       viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
     }
 
-    
-  // Armazena os valores de câmera manualmente
-  let cameraState = {
-    theta: 0,
-    phi: 1.309, // ~75 graus
-    radius: 3
-  };
-
-  viewer.addEventListener('load', async () => {
-    // Inicializa os valores reais quando o modelo carregar
-    const orbit = await viewer.getCameraOrbit();
-    cameraState.theta = parseFloat(orbit.theta);
-    cameraState.phi = parseFloat(orbit.phi);
-    cameraState.radius = parseFloat(orbit.radius);
-    console.log("Inicial:", cameraState);
-  });
-
-  function updateCamera() {
-    const { theta, phi, radius } = cameraState;
-    viewer.cameraOrbit = `${theta}rad ${phi}rad ${radius}m`;
-  }
-
-  function zoomIn() {
-    cameraState.radius = Math.max(cameraState.radius - 1, 0.5);
-    updateCamera();
-  }
-
-  function zoomOut() {
-    cameraState.radius = cameraState.radius + 1;
-    updateCamera();
-  }
-
-  function rotateLeft() {
-    cameraState.theta += 0.3;
-    updateCamera();
-  }
-
-  function rotateRight() {
-    cameraState.theta -= 0.3;
-    updateCamera();
-  }
-
-  function reset() {
-    cameraState = {
+    // Estado manual da câmera
+    let cameraState = {
       theta: 0,
-      phi: 1.309, // 75°
+      phi: 1.309,  // 75 graus em radianos
       radius: 3
     };
-    updateCamera();
-  }
-</script>
 
+    viewer.addEventListener('load', async () => {
+      // Inicializa valores do modelo carregado
+      const orbit = await viewer.getCameraOrbit();
+      cameraState.theta = parseFloat(orbit.theta);
+      cameraState.phi = parseFloat(orbit.phi);
+      cameraState.radius = parseFloat(orbit.radius);
+      updateCamera();
+    });
+
+    function updateCamera() {
+      viewer.cameraOrbit = `${cameraState.theta}rad ${cameraState.phi}rad ${cameraState.radius}m`;
+    }
+
+    function zoomIn() {
+      cameraState.radius = Math.max(cameraState.radius - 1, 0.5);
+      updateCamera();
+    }
+
+    function zoomOut() {
+      cameraState.radius += 1;
+      updateCamera();
+    }
+
+    function rotateLeft() {
+      cameraState.theta += 0.3;
+      updateCamera();
+    }
+
+    function rotateRight() {
+      cameraState.theta -= 0.3;
+      updateCamera();
+    }
+
+    function reset() {
+      cameraState = { theta: 0, phi: 1.309, radius: 3 };
+      updateCamera();
+    }
+  </script>
 </body>
 </html>
+
 
 
 
