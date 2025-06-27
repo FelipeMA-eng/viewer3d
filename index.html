@@ -48,8 +48,6 @@
   </model-viewer>
 
   <div class="controls">
-    <button onclick="zoomIn()">Zoom In</button>
-    <button onclick="zoomOut()">Zoom Out</button>
     <button onclick="rotateLeft()">←</button>
     <button onclick="rotateRight()">→</button>
     <button onclick="reset()">Reset</button>
@@ -84,16 +82,6 @@
     viewer.addEventListener('load', () => {
       updateCamera();
     });
-
-    function zoomIn() {
-      cameraState.radius = Math.max(cameraState.radius - 1, 0.5);
-      updateCamera();
-    }
-
-    function zoomOut() {
-      cameraState.radius += 1;
-      updateCamera();
-    }
 
     function rotateLeft() {
       cameraState.theta += 0.3;
