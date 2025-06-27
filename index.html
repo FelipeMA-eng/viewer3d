@@ -6,10 +6,8 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
+      margin: 0; padding: 0;
+      height: 100%; width: 100%;
       overflow: hidden;
       background: #000;
       font-family: sans-serif;
@@ -38,14 +36,15 @@
   </style>
 </head>
 <body>
-  <model-viewer id="viewer"
+  <model-viewer
+    id="viewer"
     camera-controls
-    auto-rotate="false"
     interaction-prompt="none"
-    background-color="#ffffff"
-    shadow-intensity="0.5"
-    exposure="1"
     environment-image="neutral"
+    exposure="1"
+    auto-rotate="false"
+    shadow-intensity="0.5"
+    background-color="#fff"
     ar>
   </model-viewer>
 
@@ -60,7 +59,7 @@
   <script>
     const viewer = document.getElementById("viewer");
 
-    // Carregar modelo via parâmetro
+    // Parâmetros URL
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
     const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
@@ -74,16 +73,15 @@
     // Estado manual da câmera
     let cameraState = {
       theta: 0,
-      phi: 1.309,  // 75 graus em radianos
+      phi: 1.309,  // ~75 graus
       radius: 3
     };
 
-    viewer.addEventListener('load', async () => {
-      // Inicializa valores do modelo carregado
+    viewer.addEventListener('model-visibility', async () => {
       const orbit = await viewer.getCameraOrbit();
-      cameraState.theta = parseFloat(orbit.theta);
-      cameraState.phi = parseFloat(orbit.phi);
-      cameraState.radius = parseFloat(orbit.radius);
+      cameraState.theta = parseFloat(orbit.theta.toString());
+      cameraState.phi = parseFloat(orbit.phi.toString());
+      cameraState.radius = parseFloat(orbit.radius.toString());
       updateCamera();
     });
 
@@ -118,6 +116,7 @@
   </script>
 </body>
 </html>
+
 
 
 
