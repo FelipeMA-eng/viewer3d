@@ -51,8 +51,8 @@
   </model-viewer>
 
   <div class="controls">
-    <button onclick="zoomOut()">Zoom In</button>
-    <button onclick="zoomIn()">Zoom Out</button>
+    <button onclick="zoomIn()">Zoom In</button>
+    <button onclick="zoomOut()">Zoom Out</button>
     <button onclick="rotateLeft()">←</button>
     <button onclick="rotateRight()">→</button>
     <button onclick="reset()">Reset</button>
@@ -89,14 +89,16 @@ async function zoomOut() {
 }
 
     async function rotateLeft() {
-      const orbit = await viewer.getCameraOrbit();
-      viewer.cameraOrbit = `${orbit.theta - 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
-    }
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  viewer.cameraOrbit = `${theta + 0.3}rad ${orbit.phi} ${orbit.radius}`;
+}
 
-    async function rotateRight() {
-      const orbit = await viewer.getCameraOrbit();
-      viewer.cameraOrbit = `${orbit.theta + 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
-    }
+async function rotateRight() {
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  viewer.cameraOrbit = `${theta - 0.3}rad ${orbit.phi} ${orbit.radius}`;
+}
 
     function reset() {
       viewer.cameraOrbit = `0rad 75deg 3m`;
