@@ -76,16 +76,20 @@
     // Controles de câmera
     async function zoomIn() {
   const orbit = await viewer.getCameraOrbit();
-  const radius = parseFloat(orbit.radius); // converte "2.5m" para 2.5
+  const radius = parseFloat(orbit.radius.replace('m', ''));
+  const theta = parseFloat(orbit.theta.replace('rad', ''));
+  const phi = parseFloat(orbit.phi.replace('rad', ''));
   const novoZoom = Math.max(radius - 1, 0.5);
-  viewer.cameraOrbit = `${orbit.theta} ${orbit.phi} ${novoZoom}m`;
+  viewer.cameraOrbit = `${theta}rad ${phi}rad ${novoZoom}m`;
 }
 
 async function zoomOut() {
   const orbit = await viewer.getCameraOrbit();
-  const radius = parseFloat(orbit.radius);
+  const radius = parseFloat(orbit.radius.replace('m', ''));
+  const theta = parseFloat(orbit.theta.replace('rad', ''));
+  const phi = parseFloat(orbit.phi.replace('rad', ''));
   const novoZoom = radius + 1;
-  viewer.cameraOrbit = `${orbit.theta} ${orbit.phi} ${novoZoom}m`;
+  viewer.cameraOrbit = `${theta}rad ${phi}rad ${novoZoom}m`;
 }
 
     async function rotateLeft() {
