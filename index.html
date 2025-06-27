@@ -59,7 +59,6 @@
   <script>
     const viewer = document.getElementById("viewer");
 
-    // Parâmetros URL
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
     const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
@@ -70,24 +69,22 @@
       viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
     }
 
-    // Estado manual da câmera
+    // Estado da câmera - inicializado com valores fixos para evitar getCameraOrbit()
     let cameraState = {
       theta: 0,
-      phi: 1.309,  // ~75 graus
+      phi: 1.309,  // 75 graus em radianos
       radius: 3
     };
 
-    viewer.addEventListener('model-visibility', async () => {
-      const orbit = await viewer.getCameraOrbit();
-      cameraState.theta = parseFloat(orbit.theta.toString());
-      cameraState.phi = parseFloat(orbit.phi.toString());
-      cameraState.radius = parseFloat(orbit.radius.toString());
-      updateCamera();
-    });
-
+    // Atualiza a câmera com os valores do estado
     function updateCamera() {
       viewer.cameraOrbit = `${cameraState.theta}rad ${cameraState.phi}rad ${cameraState.radius}m`;
     }
+
+    // Aplica o estado inicial assim que o modelo for carregado
+    viewer.addEventListener('load', () => {
+      updateCamera();
+    });
 
     function zoomIn() {
       cameraState.radius = Math.max(cameraState.radius - 1, 0.5);
