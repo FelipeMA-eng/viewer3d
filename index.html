@@ -73,6 +73,26 @@
       viewer.cameraOrbit = `${theta}rad ${phi} ${radius}m`;
     }
 
+async function rotateUp() {
+      const o = await viewer.getCameraOrbit();
+      const radius = parseFloat(o.radius.toString());
+      let phi = parseFloat(o.phi.toString()) - 0.2; // diminui phi para "subir"
+      // limita phi para não passar do topo
+      phi = Math.max(0.1, phi);
+      const theta = parseFloat(o.theta.toString());
+      viewer.cameraOrbit = `${theta}rad ${phi}rad ${radius}m`;
+    }
+
+    async function rotateDown() {
+      const o = await viewer.getCameraOrbit();
+      const radius = parseFloat(o.radius.toString());
+      let phi = parseFloat(o.phi.toString()) + 0.2; // aumenta phi para "descer"
+      // limita phi para não ir para baixo demais
+      phi = Math.min(Math.PI - 0.1, phi);
+      const theta = parseFloat(o.theta.toString());
+      viewer.cameraOrbit = `${theta}rad ${phi}rad ${radius}m`;
+    }
+    
     function reset() {
       viewer.cameraOrbit = `0rad 1.309rad 3m`;
     }
