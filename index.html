@@ -3,36 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <title>Visualizador 3D</title>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  </script>
   <style>
-    html, body {
-      margin: 0; padding: 0;
-      height: 100%; width: 100%;
-      overflow: hidden;
-      background: #000;
-      font-family: sans-serif;
-    }
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
-    }
-    .controls {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-      z-index: 10;
-    }
-    .controls button {
-      background: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
+    html, body { margin:0; padding:0; height:100%; width:100%; overflow:hidden; background:#000; }
+    model-viewer { width:100vw; height:100vh; }
+    .controls { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:10; }
+    .controls button { background:#fff; border:none; padding:10px 16px; border-radius:6px; font-size:14px; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -42,12 +20,14 @@
     interaction-prompt="none"
     environment-image="neutral"
     exposure="1"
+    auto-rotate="false"
     shadow-intensity="0.5"
-    background-color="#fff"
     ar>
   </model-viewer>
 
   <div class="controls">
+    <button onclick="zoomIn()">Zoom +</button>
+    <button onclick="zoomOut()">Zoom -</button>
     <button onclick="rotateLeft()">←</button>
     <button onclick="rotateRight()">→</button>
     <button onclick="reset()">Reset</button>
@@ -55,51 +35,49 @@
 
   <script>
     const viewer = document.getElementById("viewer");
-
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
     const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
+    if (modelo) viewer.setAttribute("src", baseURL + modelo);
+    else viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
 
-    if (modelo) {
-      viewer.setAttribute("src", baseURL + modelo);
-    } else {
-      viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
+    async function zoomIn() {
+      const o = await viewer.getCameraOrbit();
+      const radius = parseFloat(o.radius.toString());
+      const theta = o.theta, phi = o.phi;
+      const newR = Math.max(radius - 1, 0.5);
+      viewer.cameraOrbit = `${theta} ${phi} ${newR}m`;
+    }
+    async function zoomOut() {
+      const o = await viewer.getCameraOrbit();
+      const radius = parseFloat(o.radius.toString());
+      const theta = o.theta, phi = o.phi;
+      const newR = radius + 1;
+      viewer.cameraOrbit = `${theta} ${phi} ${newR}m`;
     }
 
-    // Estado da câmera - inicializado com valores fixos para evitar getCameraOrbit()
-    let cameraState = {
-      theta: 0,
-      phi: 1.309,  // 75 graus em radianos
-      radius: 3
-    };
-
-    // Atualiza a câmera com os valores do estado
-    function updateCamera() {
-      viewer.cameraOrbit = `${cameraState.theta}rad ${cameraState.phi}rad ${cameraState.radius}m`;
+    async function rotateLeft() {
+      const o = await viewer.getCameraOrbit();
+      const radius = parseFloat(o.radius.toString());
+      const phi = o.phi;
+      const theta = parseFloat(o.theta.toString()) + 0.3;
+      viewer.cameraOrbit = `${theta}rad ${phi} ${radius}m`;
     }
-
-    // Aplica o estado inicial assim que o modelo for carregado
-    viewer.addEventListener('load', () => {
-      updateCamera();
-    });
-
-    function rotateLeft() {
-      cameraState.theta += 0.3;
-      updateCamera();
-    }
-
-    function rotateRight() {
-      cameraState.theta -= 0.3;
-      updateCamera();
+    async function rotateRight() {
+      const o = await viewer.getCameraOrbit();
+      const radius = parseFloat(o.radius.toString());
+      const phi = o.phi;
+      const theta = parseFloat(o.theta.toString()) - 0.3;
+      viewer.cameraOrbit = `${theta}rad ${phi} ${radius}m`;
     }
 
     function reset() {
-      cameraState = { theta: 0, phi: 1.309, radius: 3 };
-      updateCamera();
+      viewer.cameraOrbit = `0rad 1.309rad 3m`;
     }
   </script>
 </body>
 </html>
+
 
 
 
