@@ -1,75 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Visualizador 3D</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-        background: #000;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualizador 3D</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: sans-serif;
+    }
 
-      model-viewer {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        touch-action: pan-y;
-      }
-    </style>
-  </head>
-  <body>
-    <model-viewer
-      id="viewer"
-      camera-controls
-      background-color="#ffffff"
-      shadow-intensity="0.5"
-      exposure="1"
-      environment-image="neutral"
-      ar>
-    </model-viewer>
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+    }
 
-    <script>
-  const params = new URLSearchParams(window.location.search);
-  const modelo = params.get("modelo");
-  const comando = params.get("comando");
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
 
-  const viewer = document.getElementById("viewer");
+    .controls button {
+      background: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <model-viewer id="viewer"
+    camera-controls
+    background-color="#ffffff"
+    shadow-intensity="0.5"
+    exposure="1"
+    environment-image="neutral"
+    ar>
+  </model-viewer>
 
-  const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
-  if (modelo) {
-    viewer.setAttribute("src", baseURL + modelo);
-  } else {
-    viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
-  }
+  <div class="controls">
+    <button onclick="zoomIn()">Zoom In</button>
+    <button onclick="zoomOut()">Zoom Out</button>
+    <button onclick="rotateLeft()">←</button>
+    <button onclick="rotateRight()">→</button>
+    <button onclick="reset()">Reset</button>
+  </div>
 
-  window.addEventListener("message", async (event) => {
-  const comando = event.data;
-  const viewer = document.getElementById("viewer");
-  const orbit = await viewer.getCameraOrbit();
+  <script>
+    const viewer = document.getElementById("viewer");
 
-  if (comando === "zoomIn") {
-    const novoZoom = Math.max(orbit.radius - 1, 0.5);
-    viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
-  } else if (comando === "zoomOut") {
-    const novoZoom = orbit.radius + 1;
-    viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
-  } else if (comando === "rotateLeft") {
-    viewer.cameraOrbit = `${orbit.theta - 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
-  } else if (comando === "rotateRight") {
-    viewer.cameraOrbit = `${orbit.theta + 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
-  } else if (comando === "reset") {
-    viewer.cameraOrbit = `0rad 75deg 3m`;
-  }
-});
-</script>
-  </body>
+    async function zoomIn() {
+      const orbit = await viewer.getCameraOrbit();
+      const novoZoom = Math.max(orbit.radius - 1, 0.5);
+      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
+    }
+
+    async function zoomOut() {
+      const orbit = await viewer.getCameraOrbit();
+      const novoZoom = orbit.radius + 1;
+      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${novoZoom}m`;
+    }
+
+    async function rotateLeft() {
+      const orbit = await viewer.getCameraOrbit();
+      viewer.cameraOrbit = `${orbit.theta - 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
+    }
+
+    async function rotateRight() {
+      const orbit = await viewer.getCameraOrbit();
+      viewer.cameraOrbit = `${orbit.theta + 0.3}rad ${orbit.phi}rad ${orbit.radius}m`;
+    }
+
+    function reset() {
+      viewer.cameraOrbit = `0rad 75deg 3m`;
+    }
+  </script>
+</body>
 </html>
 
 
