@@ -4,13 +4,28 @@
   <meta charset="UTF-8" />
   <title>Visualizador 3D</title>
   <script type="module"
-    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-  </script>
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     html, body { margin:0; padding:0; height:100%; width:100%; overflow:hidden; background:#000; }
     model-viewer { width:100vw; height:100vh; }
-    .controls { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:10; }
-    .controls button { background:#fff; border:none; padding:10px 16px; border-radius:6px; font-size:14px; cursor:pointer; }
+    .controls {
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:10px;
+      z-index:10;
+      flex-wrap: wrap;
+    }
+    .controls button {
+      background:#fff;
+      border:none;
+      padding:10px 16px;
+      border-radius:6px;
+      font-size:14px;
+      cursor:pointer;
+    }
   </style>
 </head>
 <body>
@@ -20,8 +35,9 @@
     interaction-prompt="none"
     environment-image="neutral"
     exposure="1"
-    auto-rotate= "false"
+    auto-rotate="false"
     shadow-intensity="0.5"
+    background-color="#fff"
     ar>
   </model-viewer>
 
@@ -35,70 +51,62 @@
 
   <script>
     const viewer = document.getElementById("viewer");
-    viewer.addEventListener('load', () => {
-       viewer.autoRotate = false;});
+
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
     const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
     if (modelo) viewer.setAttribute("src", baseURL + modelo);
     else viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
 
-    async function zoomIn() {
-      const o = await viewer.getCameraOrbit();
-      const radius = parseFloat(o.radius.toString());
-      const theta = o.theta, phi = o.phi;
-      const newR = Math.max(radius - 1, 0.5);
-      viewer.cameraOrbit = `${theta} ${phi} ${newR}m`;
-    }
-    async function zoomOut() {
-      const o = await viewer.getCameraOrbit();
-      const radius = parseFloat(o.radius.toString());
-      const theta = o.theta, phi = o.phi;
-      const newR = radius + 1;
-      viewer.cameraOrbit = `${theta} ${phi} ${newR}m`;
-    }
+    viewer.autoRotate = false;
 
-    async function rotateLeft() {
-      const o = await viewer.getCameraOrbit();
-      const radius = parseFloat(o.radius.toString());
-      const phi = o.phi;
-      const theta = parseFloat(o.theta.toString()) + 0.3;
-      viewer.cameraOrbit = `${theta}rad ${phi} ${radius}m`;
-    }
-    async function rotateRight() {
-      const o = await viewer.getCameraOrbit();
-      const radius = parseFloat(o.radius.toString());
-      const phi = o.phi;
-      const theta = parseFloat(o.theta.toString()) - 0.3;
-      viewer.cameraOrbit = `${theta}rad ${phi} ${radius}m`;
-    }
+    // Estado global
+    let theta = 0;
+    let phi = 1.309;  // ~75 graus em radianos
+    let radius = 3;
 
-async function rotateUp() {
-      const o = await viewer.getCameraOrbit();
-      const radius = parseFloat(o.radius.toString());
-      let phi = parseFloat(o.phi.toString()) - 0.2; // diminui phi para "subir"
-      // limita phi para não passar do topo
-      phi = Math.max(0.1, phi);
-      const theta = parseFloat(o.theta.toString());
+    // Aplica a posição atual da câmera
+    function updateCamera() {
       viewer.cameraOrbit = `${theta}rad ${phi}rad ${radius}m`;
     }
 
-    async function rotateDown() {
-      const o = await viewer.getCameraOrbit();
-      const radius = parseFloat(o.radius.toString());
-      let phi = parseFloat(o.phi.toString()) + 0.2; // aumenta phi para "descer"
-      // limita phi para não ir para baixo demais
-      phi = Math.min(Math.PI - 0.1, phi);
-      const theta = parseFloat(o.theta.toString());
-      viewer.cameraOrbit = `${theta}rad ${phi}rad ${radius}m`;
+    // Mantém zoom manual dado pelo usuário
+    viewer.addEventListener('camera-change', async () => {
+      const orbit = await viewer.getCameraOrbit();
+      radius = parseFloat(orbit.radius.toString());
+    });
+
+    function rotateLeft() {
+      theta += 0.3;
+      updateCamera();
     }
-    
+    function rotateRight() {
+      theta -= 0.3;
+      updateCamera();
+    }
+    function rotateUp() {
+      phi = Math.max(0.1, phi - 0.2);
+      updateCamera();
+    }
+    function rotateDown() {
+      phi = Math.min(Math.PI - 0.1, phi + 0.2);
+      updateCamera();
+    }
     function reset() {
-      viewer.cameraOrbit = `0rad 1.309rad 3m`;
+      theta = 0;
+      phi = 1.309;
+      radius = 3;
+      updateCamera();
     }
+
+    // Aplica câmera inicial assim que o modelo carregar
+    viewer.addEventListener('load', () => {
+      updateCamera();
+    });
   </script>
 </body>
 </html>
+
 
 
 
