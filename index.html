@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <title>Visualizador 3D</title>
@@ -61,7 +61,7 @@
   <script>
     const viewer = document.getElementById("viewer");
 
-    // Carrega o modelo dinamicamente via ?modelo=...
+    // Carrega o modelo da URL (?modelo=...)
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
     const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
@@ -69,40 +69,48 @@
     if (modelo) {
       viewer.setAttribute("src", baseURL + modelo);
     } else {
-      // Se não passar nada, usa modelo padrão
       viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
     }
 
-    // Controles de câmera
     async function zoomIn() {
-  const orbit = await viewer.getCameraOrbit();
-  const radius = parseFloat(orbit.radius.replace('m', ''));
-  const theta = parseFloat(orbit.theta.replace('rad', ''));
-  const phi = parseFloat(orbit.phi.replace('rad', ''));
-  const novoZoom = Math.max(radius - 1, 0.5);
-  viewer.cameraOrbit = `${theta}rad ${phi}rad ${novoZoom}m`;
-}
+      viewer.cameraOrbit = viewer.cameraOrbit; // força atualização
+      await viewer.updateComplete;
 
-async function zoomOut() {
-  const orbit = await viewer.getCameraOrbit();
-  const radius = parseFloat(orbit.radius.replace('m', ''));
-  const theta = parseFloat(orbit.theta.replace('rad', ''));
-  const phi = parseFloat(orbit.phi.replace('rad', ''));
-  const novoZoom = radius + 1;
-  viewer.cameraOrbit = `${theta}rad ${phi}rad ${novoZoom}m`;
-}
+      const orbit = await viewer.getCameraOrbit();
+      const radius = parseFloat(orbit.radius.replace('m', ''));
+      const theta = parseFloat(orbit.theta.replace('rad', ''));
+      const phi = parseFloat(orbit.phi.replace('rad', ''));
+      const novoZoom = Math.max(radius - 1, 0.5);
+      viewer.cameraOrbit = `${theta}rad ${phi}rad ${novoZoom}m`;
+    }
+
+    async function zoomOut() {
+      viewer.cameraOrbit = viewer.cameraOrbit;
+      await viewer.updateComplete;
+
+      const orbit = await viewer.getCameraOrbit();
+      const radius = parseFloat(orbit.radius.replace('m', ''));
+      const theta = parseFloat(orbit.theta.replace('rad', ''));
+      const phi = parseFloat(orbit.phi.replace('rad', ''));
+      const novoZoom = radius + 1;
+      viewer.cameraOrbit = `${theta}rad ${phi}rad ${novoZoom}m`;
+    }
 
     async function rotateLeft() {
-  const orbit = await viewer.getCameraOrbit();
-  const theta = parseFloat(orbit.theta);
-  viewer.cameraOrbit = `${theta + 0.3}rad ${orbit.phi} ${orbit.radius}`;
-}
+      const orbit = await viewer.getCameraOrbit();
+      const radius = parseFloat(orbit.radius.replace('m', ''));
+      const theta = parseFloat(orbit.theta.replace('rad', ''));
+      const phi = parseFloat(orbit.phi.replace('rad', ''));
+      viewer.cameraOrbit = `${theta + 0.3}rad ${phi}rad ${radius}m`;
+    }
 
-async function rotateRight() {
-  const orbit = await viewer.getCameraOrbit();
-  const theta = parseFloat(orbit.theta);
-  viewer.cameraOrbit = `${theta - 0.3}rad ${orbit.phi} ${orbit.radius}`;
-}
+    async function rotateRight() {
+      const orbit = await viewer.getCameraOrbit();
+      const radius = parseFloat(orbit.radius.replace('m', ''));
+      const theta = parseFloat(orbit.theta.replace('rad', ''));
+      const phi = parseFloat(orbit.phi.replace('rad', ''));
+      viewer.cameraOrbit = `${theta - 0.3}rad ${phi}rad ${radius}m`;
+    }
 
     function reset() {
       viewer.cameraOrbit = `0rad 75deg 3m`;
@@ -110,6 +118,7 @@ async function rotateRight() {
   </script>
 </body>
 </html>
+
 
 
 
