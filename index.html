@@ -97,20 +97,16 @@
     }
 
     async function rotateLeft() {
-      const orbit = await viewer.getCameraOrbit();
-      const radius = parseFloat(orbit.radius.replace('m', ''));
-      const theta = parseFloat(orbit.theta.replace('rad', ''));
-      const phi = parseFloat(orbit.phi.replace('rad', ''));
-      viewer.cameraOrbit = `${theta + 0.3}rad ${phi}rad ${radius}m`;
-    }
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  viewer.cameraOrbit = `${theta + 0.3}rad ${orbit.phi} ${orbit.radius}`;
+}
 
-    async function rotateRight() {
-      const orbit = await viewer.getCameraOrbit();
-      const radius = parseFloat(orbit.radius.replace('m', ''));
-      const theta = parseFloat(orbit.theta.replace('rad', ''));
-      const phi = parseFloat(orbit.phi.replace('rad', ''));
-      viewer.cameraOrbit = `${theta - 0.3}rad ${phi}rad ${radius}m`;
-    }
+async function rotateRight() {
+  const orbit = await viewer.getCameraOrbit();
+  const theta = parseFloat(orbit.theta);
+  viewer.cameraOrbit = `${theta - 0.3}rad ${orbit.phi} ${orbit.radius}`;
+}
 
     function reset() {
       viewer.cameraOrbit = `0rad 75deg 3m`;
