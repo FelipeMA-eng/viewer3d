@@ -105,7 +105,7 @@
 
   viewer.cameraOrbit = `${newTheta}rad ${phi}rad ${radius}m`;
 }
-   async function rotateUp() {
+   async function rotateDown() {
   const orbit = await viewer.getCameraOrbit();
   const theta = parseFloat(orbit.theta);
   const phi = parseFloat(orbit.phi);
@@ -117,7 +117,7 @@
   viewer.cameraOrbit = `${theta}rad ${newPhi}rad ${radius}m`;
 }
 
-async function rotateDown() {
+async function rotateUp() {
   const orbit = await viewer.getCameraOrbit();
   const theta = parseFloat(orbit.theta);
   const phi = parseFloat(orbit.phi);
