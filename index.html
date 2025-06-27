@@ -61,6 +61,19 @@
   <script>
     const viewer = document.getElementById("viewer");
 
+    // Carrega o modelo dinamicamente via ?modelo=...
+    const params = new URLSearchParams(window.location.search);
+    const modelo = params.get("modelo");
+    const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
+
+    if (modelo) {
+      viewer.setAttribute("src", baseURL + modelo);
+    } else {
+      // Se não passar nada, usa modelo padrão
+      viewer.setAttribute("src", baseURL + "model3d/modern_house_of_shapes.glb");
+    }
+
+    // Controles de câmera
     async function zoomIn() {
       const orbit = await viewer.getCameraOrbit();
       const novoZoom = Math.max(orbit.radius - 1, 0.5);
