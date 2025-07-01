@@ -62,7 +62,7 @@
 
     const params = new URLSearchParams(window.location.search);
     const modelo = params.get("modelo");
-    const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/";
+    const baseURL = "https://pfhelkhdgshsiclszfxh.supabase.co/storage/v1/object/public/model3d/";
     if (modelo) viewer.setAttribute("src", baseURL + modelo);
     else viewer.setAttribute("src", baseURL + "model3d/modelo_padrao/modern_house_of_shapes.glb");
 
