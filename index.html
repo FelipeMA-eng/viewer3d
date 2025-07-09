@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Visualizador 3D</title>
   <script type="module"
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -10,30 +11,30 @@
     model-viewer { width:100vw; height:100vh; }
 
     .controls {
-  position: fixed;
-  bottom: 20px;         /* coloca na parte de baixo */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;             /* espaço entre botões */
-  z-index: 10;
-}
-   .controls button {
-  background: rgba(238, 139, 96, 0.8);  /* fundo laranja com transparência */
-  border: none;
-  padding: 6px;        /* diminui tamanho do botão */
-  border-radius: 8px;
-  font-size: 20px;     /* deixa tamanho quase só do emoji */
-  cursor: pointer;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  transition: background 0.3s, transform 0.2s;
-}
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .controls button {
+      background: rgba(238, 139, 96, 0.8);
+      border: none;
+      padding: 2.5vw;
+      border-radius: 8px;
+      font-size: 5vw;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      transition: background 0.3s, transform 0.2s;
+    }
 
-.controls button:hover {
-  background: rgba(238, 139, 96, 1);  /* totalmente opaco no hover */
-  transform: scale(1.1);
-}
+    .controls button:hover {
+      background: rgba(238, 139, 96, 1);
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -68,69 +69,46 @@
 
     viewer.autoRotate = false;
 
-    // Estado global
     let theta = 0;
-    let phi = 1.309;  // ~75 graus
+    let phi = 1.309;
     let radius = 3;
 
     function updateCamera() {
       viewer.cameraOrbit = `${theta}rad ${phi}rad ${radius}m`;
     }
 
-    // Mantém zoom dado pelo usuário
     viewer.addEventListener('camera-change', async () => {
       const orbit = await viewer.getCameraOrbit();
       radius = parseFloat(orbit.radius.toString());
     });
 
     async function rotateLeft() {
-  const orbit = await viewer.getCameraOrbit();
-  const theta = parseFloat(orbit.theta);
-  const phi = parseFloat(orbit.phi);
-  const radius = parseFloat(orbit.radius);
+      const orbit = await viewer.getCameraOrbit();
+      const newTheta = parseFloat(orbit.theta) + 0.3;
+      viewer.cameraOrbit = `${newTheta}rad ${orbit.phi}rad ${orbit.radius}m`;
+    }
 
-  const newTheta = theta + 0.3;
-
-  viewer.cameraOrbit = `${newTheta}rad ${phi}rad ${radius}m`;
-}
     async function rotateRight() {
-  const orbit = await viewer.getCameraOrbit();
-  const theta = parseFloat(orbit.theta);
-  const phi = parseFloat(orbit.phi);
-  const radius = parseFloat(orbit.radius);
+      const orbit = await viewer.getCameraOrbit();
+      const newTheta = parseFloat(orbit.theta) - 0.3;
+      viewer.cameraOrbit = `${newTheta}rad ${orbit.phi}rad ${orbit.radius}m`;
+    }
 
-  // Incrementa theta para girar à direita
-  const newTheta = theta - 0.3;
+    async function rotateDown() {
+      const orbit = await viewer.getCameraOrbit();
+      const newPhi = Math.max(0.1, parseFloat(orbit.phi) - 0.2);
+      viewer.cameraOrbit = `${orbit.theta}rad ${newPhi}rad ${orbit.radius}m`;
+    }
 
-  viewer.cameraOrbit = `${newTheta}rad ${phi}rad ${radius}m`;
-}
-   async function rotateDown() {
-  const orbit = await viewer.getCameraOrbit();
-  const theta = parseFloat(orbit.theta);
-  const phi = parseFloat(orbit.phi);
-  const radius = parseFloat(orbit.radius);
+    async function rotateUp() {
+      const orbit = await viewer.getCameraOrbit();
+      const newPhi = Math.min(Math.PI - 0.1, parseFloat(orbit.phi) + 0.2);
+      viewer.cameraOrbit = `${orbit.theta}rad ${newPhi}rad ${orbit.radius}m`;
+    }
 
-  // Limita phi para não virar demais para cima/baixo
-  const newPhi = Math.max(0.1, phi - 0.2);
-
-  viewer.cameraOrbit = `${theta}rad ${newPhi}rad ${radius}m`;
-}
-
-async function rotateUp() {
-  const orbit = await viewer.getCameraOrbit();
-  const theta = parseFloat(orbit.theta);
-  const phi = parseFloat(orbit.phi);
-  const radius = parseFloat(orbit.radius);
-
-  // Limita phi para não virar demais para cima/baixo
-  const newPhi = Math.min(Math.PI - 0.1, phi + 0.2);
-
-  viewer.cameraOrbit = `${theta}rad ${newPhi}rad ${radius}m`;
-}
-
-function reset() {
-  viewer.cameraOrbit = `0rad 1.309rad 3m`; // posição inicial padrão
-}
+    function reset() {
+      viewer.cameraOrbit = `0rad 1.309rad 3m`;
+    }
 
     viewer.addEventListener('load', () => {
       updateCamera();
